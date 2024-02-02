@@ -13,16 +13,16 @@ import { useSelector } from "react-redux";
 const Countries = () => {
   const dispatch = useDispatch();
 
-  // import the countriesList and loading state from the store
-
   const countriesList = useSelector((state) => state.countries.countries);
-  const loading = useSelector((state) => state.countries.loading);
+  const isLoading = useSelector((state) => state.countries.isLoading);
 
   useEffect(() => {
     dispatch(initializeCountries());
   }, [dispatch]);
 
-  if (loading) {
+  console.log(countriesList);
+
+  if (isLoading) {
     return (
       <Col className="text-center m-5">
         <Spinner
@@ -46,6 +46,7 @@ const Countries = () => {
               <Card.Img
                 variant="top"
                 className="rounded h-50"
+                src={country.flags.png}
                 style={{
                   objectFit: "cover",
                   minHeight: "200px",
@@ -53,9 +54,9 @@ const Countries = () => {
                 }}
               />
               <Card.Body className="d-flex flex-column">
-                <Card.Title>** PUT COUNTRY COMMON NAME HERE **</Card.Title>
+                <Card.Title>{country.name.common}</Card.Title>
                 <Card.Subtitle className="mb-5 text-muted">
-                  ** PUT COUNTRY OFFICIAL NAME HERE **
+                  {country.name.official}
                 </Card.Subtitle>
                 <ListGroup
                   variant="flush"
@@ -63,14 +64,22 @@ const Countries = () => {
                 >
                   <ListGroup.Item>
                     <i className="bi bi-translate me-2"></i>
-                    create a list of languages from the array.
+                    Language:
+                    {country.languages
+                      ? Object.values(country.languages).join(", ")
+                      : "No language specified"}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <i className="bi bi-cash-coin me-2"></i>
-                    create list of currencies from the array.
+                    Currency:
+                    {Object.values(country.currencies || {})
+                      .map((currency) => currency.name)
+                      .join(", ")}
                   </ListGroup.Item>
+
                   <ListGroup.Item>
-                    show population with formatting here.
+                    <i className="bi bi-people me-2"></i>
+                    Population: {country.population.toLocaleString()}
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Body>
